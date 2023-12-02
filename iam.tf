@@ -12,30 +12,55 @@ resource "aws_iam_user_policy_attachment" "attach_codecommit_power_user" {
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
 
-resource "aws_iam_user_policy" "codecommit_policy" {
-  name = "codecommit_policy"
-  user = data.aws_iam_user.serverless.user_name
+# resource "aws_iam_user_policy" "codecommit_policy" {
+#   name = "codecommit_policy"
+#   user = data.aws_iam_user.serverless.user_name
 
-  policy = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "codecommit:GitPull",
-        "codecommit:GitPush"
-      ],
-      "Resource": "arn:aws:codecommit:us-east-1:005654795190:wild-rides-repo"
-    }
-  ]
-}
-POLICY
-}
-
-# resource "aws-iam-role" "wild-rides" {
-  
+#   policy = <<POLICY
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "codecommit:GitPull",
+#         "codecommit:GitPush"
+#       ],
+#       "Resource": "arn:aws:codecommit:us-east-1:005654795190:wild-rides-repo"
+#     }
+#   ]
 # }
+# POLICY
+# }
+
+# Define a service role for amplify
+resource "aws_iam_role" "iam_role_amplify" {
+  name = "amplify-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Sid    = "",
+        Principal = {
+          Service = "amplify.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    tag-key = "amplify-iam-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "attach_admin_policy" {
+  role       = aws_iam_role.iam_role_amplify.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-Amplify"
+}
+
 
 # resource "aws_iam_role" "iam_role_lambda" {
 #   name = var.role-1
@@ -79,3 +104,5 @@ POLICY
 #     tag-key = "tag-value"
 #   }
 # }
+
+#
