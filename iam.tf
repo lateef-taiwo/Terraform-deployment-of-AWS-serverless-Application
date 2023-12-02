@@ -61,6 +61,21 @@ resource "aws_iam_role_policy_attachment" "attach_admin_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-Amplify"
 }
 
+# resource "aws_iam_role" "codepipeline_role" {
+#   # Define the IAM role for CodePipeline
+#   # ...
+
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [{
+#       Action = "sts:AssumeRole",
+#       Effect = "Allow",
+#       Principal = {
+#         Service = "codepipeline.amazonaws.com",
+#       },
+#     }],
+#   })
+# }
 
 # resource "aws_iam_role" "iam_role_lambda" {
 #   name = var.role-1
