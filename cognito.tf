@@ -1,6 +1,7 @@
 resource "aws_cognito_user_pool" "pool" {
-  name = "myuserpool"
+  name = "wild-rides-user-pool"
   mfa_configuration = "OFF"  # Use double quotes for string values
+  
   admin_create_user_config {
     allow_admin_create_user_only = false
   }
@@ -12,12 +13,7 @@ resource "aws_cognito_user_pool" "pool" {
     require_numbers   = true
     require_symbols   = true
   }
-  email_configuration {
-    email_sending_account = "COGNITO_DEFAULT"  # or "DEVELOPER"
-    # Additional email configuration if needed
-    # reply_to_email_address = "reply@example.com" (optional)
-    # source_arn = aws_ses_email_identity.example.arn  # To be used if developer is choosed
-  }
+  auto_verified_attributes = ["email"]
 
   verification_message_template {
     default_email_option = "CONFIRM_WITH_CODE"
@@ -25,6 +21,14 @@ resource "aws_cognito_user_pool" "pool" {
     email_message        = "This is your confirmation code: {####}"
   }
   # other configuration options...
+
+  email_configuration {
+    email_sending_account = "COGNITO_DEFAULT"  # or "DEVELOPER"
+    # Additional email configuration if needed
+    # reply_to_email_address = "reply@example.com" (optional)
+    # source_arn = aws_ses_email_identity.example.arn  # To be used if developer is choosed
+  }
+
 }
 
 resource "aws_cognito_user_pool_client" "pool_client" {
