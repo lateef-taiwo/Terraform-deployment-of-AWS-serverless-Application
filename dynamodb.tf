@@ -1,6 +1,6 @@
 resource "aws_dynamodb_table" "Wild-Rides-Details-db" {
   name           = "Wild-Rides-Table"
-  billing_mode   = "PAY_PER_REQUEST" 
+  billing_mode   = "PROVISIONED" 
   read_capacity  = 10
   write_capacity = 10
   hash_key       = "ID"

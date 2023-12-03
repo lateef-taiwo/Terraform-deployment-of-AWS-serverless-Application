@@ -1,7 +1,3 @@
-# resource "aws_iam_user" "serverless" {
-#   name = "serverless"  
-# }
-
 # Import the existing IAM user
 data "aws_iam_user" "serverless" {
   user_name = "serverless"
@@ -11,27 +7,6 @@ resource "aws_iam_user_policy_attachment" "attach_codecommit_power_user" {
   user       = data.aws_iam_user.serverless.user_name
   policy_arn = "arn:aws:iam::aws:policy/AWSCodeCommitPowerUser"
 }
-
-# resource "aws_iam_user_policy" "codecommit_policy" {
-#   name = "codecommit_policy"
-#   user = data.aws_iam_user.serverless.user_name
-
-#   policy = <<POLICY
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Effect": "Allow",
-#       "Action": [
-#         "codecommit:GitPull",
-#         "codecommit:GitPush"
-#       ],
-#       "Resource": "arn:aws:codecommit:us-east-1:005654795190:wild-rides-repo"
-#     }
-#   ]
-# }
-# POLICY
-# }
 
 # Define a service role for amplify
 resource "aws_iam_role" "iam_role_amplify" {
@@ -61,43 +36,58 @@ resource "aws_iam_role_policy_attachment" "attach_admin_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-Amplify"
 }
 
-# resource "aws_iam_role" "codepipeline_role" {
-#   # Define the IAM role for CodePipeline
-#   # ...
 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [{
-#       Action = "sts:AssumeRole",
-#       Effect = "Allow",
-#       Principal = {
-#         Service = "codepipeline.amazonaws.com",
-#       },
-#     }],
-#   })
-# }
+resource "aws_iam_role" "lambda_iam_role" {
+  name = "lambda_execution_role"
+  
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
 
-# resource "aws_iam_role" "iam_role_lambda" {
-#   name = var.role-1
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  role       = aws_iam_role.lambda_iam_role.name
+}
 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Action = "sts:AssumeRole"
-#         Effect = "Allow"
-#         Sid    = ""
-#         Principal = {
-#           Service = "lambda.amazonaws.com"
-#         }
-#       },
-#     ]
-#   })
+resource "aws_iam_policy" "dynamodb_write_policy" {
+  name        = "dynamodb_write_policy"
+  description = "Policy allowing write access to DynamoDB table"
 
-#   tags = {
-#     tag-key = "tag-value"
-#   }
-# }
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-1:005654795190:table/Wild-Rides-Table"
+    }
+  ]
+}
+EOF
+
+depends_on = [ aws_dynamodb_table.Wild-Rides-Details-db ]
+}
+
+resource "aws_iam_role_policy_attachment" "dynamodb_write_attachment" {
+  policy_arn = aws_iam_policy.dynamodb_write_policy.arn
+  role       = aws_iam_role.lambda_iam_role.name
+}
+
 
 # resource "aws_iam_role" "iam_role_amplify" {
 #   name = var.role-2
