@@ -61,6 +61,18 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution_policy" {
   role       = aws_iam_role.lambda_iam_role.name
 }
 
+#Attachment of a Managed AWS IAM Policy for Lambda sqs execution
+resource "aws_iam_role_policy_attachment" "lambda_basic_sqs_queue_execution_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole"
+  role       = aws_iam_role.iam_lambda_test.name
+}
+
+#Attachment of a Managed AWS IAM Policy for Lambda S3 read access
+resource "aws_iam_role_policy_attachment" "lambda_basic_s3_read_access_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonS3ReadAccess "
+  role       = aws_iam_role.iam_lambda_test.name
+}
+
 resource "aws_iam_policy" "dynamodb_write_policy" {
   name        = "dynamodb_write_policy"
   description = "Policy allowing write access to DynamoDB table"
