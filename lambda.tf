@@ -4,10 +4,11 @@ resource "aws_lambda_function" "wild_rides_lambda" {
   runtime          = var.lambda_runtime
   memory_size = var.lambda_memory_size
   timeout = var.lambda_timeout
-  filename         = "./function.zip" #"path/to/your/lambda/function/code.zip"
+  #filename         = "./function.zip" #"path/to/your/lambda/function/code.zip"
   role             = aws_iam_role.lambda_iam_role.arn
-  source_code_hash = filebase64("function.zip")
-  publish          = true
+ # source_code_hash = filebase64("function.zip")
+  #publish          = true
+  depends_on = [aws_iam_role.lambda_iam_role]
   description = var.lambda_description
   environment {
     variables = {
