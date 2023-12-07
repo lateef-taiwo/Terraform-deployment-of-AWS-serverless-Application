@@ -47,7 +47,7 @@ resource "aws_lambda_function" "wild_rides_lambda" {
 # }
 
 # Capture Lambda output
-output "lambda_output" {
-  value = aws_lambda_invocation.invoke_test_event.result
-}
+#output "lambda_output" {
+#  value = aws_lambda_invocation.invoke_test_event.result
+#}
 
