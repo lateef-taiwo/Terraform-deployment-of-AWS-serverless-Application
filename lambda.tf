@@ -21,10 +21,26 @@ resource "aws_lambda_function" "wild_rides_lambda" {
 resource "aws_lambda_invocation" "invoke_test_event" {
   function_name = aws_lambda_function.wild_rides_lambda.function_name
   input         = <<EOT
-    {
-      "key1": "lambda",
-      "key2": "s3"
-    }
+ {
+    "path": "/ride",
+    "httpMethod": "POST",
+    "headers": {
+        "Accept": "*/*",
+        "Authorization": "eyJraWQiOiJLTzRVMWZs",
+        "content-type": "application/json; charset=UTF-8"
+    },
+    "queryStringParameters": null,
+    "pathParameters": null,
+    "requestContext": {
+        "authorizer": {
+            "claims": {
+                "cognito:username": "the_username"
+            }
+        }
+    },
+    "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
+}
+
   EOT
 
   depends_on = [aws_lambda_function.wild_rides_lambda]
