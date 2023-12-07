@@ -1,27 +1,36 @@
-#Create Bucket 1
+# Create Bucket
 resource "aws_s3_bucket" "s3-bucket" {
-  bucket = "Wild-Rides-Bucket"
+  bucket = "wild-rides-bucket-0056"
 }
 
-#Block Public Access Bucket 1
+# Block Public Access
 resource "aws_s3_bucket_public_access_block" "s3-bucket-block" {
-  bucket = aws_s3_bucket.s3-bucket-1.id
-  block_public_acls       = var.s3_bucket_block_public_acl
-  block_public_policy     = var.s3_bucket_block_public_policy
-  ignore_public_acls      = var.s3_bucket_ignore_public_acls
-  restrict_public_buckets = var.s3_bucket_restrict_public_buckets
+  bucket                  = aws_s3_bucket.s3-bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
-#Create Bucket ACL Bucket 1
-resource "aws_s3_bucket_acl" "s3-bucket-1-acl" {
-  bucket = aws_s3_bucket.s3-bucket-1.id
-  acl    = var.s3_bucket_acl
+# Create Bucket ACL
+# resource "aws_s3_bucket_acl" "s3-bucket-acl" {
+#   bucket = aws_s3_bucket.s3-bucket.id
+#   acl    = "private"
+# }
+
+# Zip the Lambda function on the fly
+data "archive_file" "source" {
+  type        = "zip"
+  source_dir  = "../Wild-Rydes/"
+  output_path = "../Wild-Rydes/lambda-function.zip"
 }
 
-resource "aws_s3_bucket_object" "lambda-function-zip" {
-  bucket     = aws_s3_bucket.s3-bucket.bucket_name
-  source     = "./function.zip"    # Local path to your Lambda function zip file
-  key        = "function.zip"  # Adjust the key based on your directory structure
-  acl        = "private"  # Adjust the ACL based on your security requirements
+# Upload the zip file to S3 bucket
+resource "aws_s3_object" "lambda-function-zip" {
+  bucket = aws_s3_bucket.s3-bucket.bucket
+  source = data.archive_file.source.output_path
+  key    = "lambda-function.zip"
+  acl    = "private"
   depends_on = [aws_s3_bucket.s3-bucket]
 }
+

@@ -1,46 +1,37 @@
+# Create Lambda Function
 resource "aws_lambda_function" "wild_rides_lambda" {
-  function_name    = "wild-rides-lambda-function"
-  handler          = var.lambda_handler
-  runtime          = var.lambda_runtime
-  memory_size = var.lambda_memory_size
-  timeout = var.lambda_timeout
-  #filename         = "./function.zip" #"path/to/your/lambda/function/code.zip"
-  role             = aws_iam_role.lambda_iam_role.arn
- # source_code_hash = filebase64("function.zip")
-  #publish          = true
-  depends_on = [aws_iam_role.lambda_iam_role]
-  description = var.lambda_description
+  function_name = "wild-rides-lambda-function"
+  handler       = "index.handler"
+  runtime       = "nodejs16.x"
+  role          = aws_iam_role.lambda_iam_role.arn
+  memory_size   = 128
+  timeout       = 60
+  s3_bucket     = "wild-rides-bucket-0056"
+  s3_key        = "lambda-function.zip"
+  depends_on    = [aws_iam_role.lambda_iam_role, aws_s3_bucket.s3-bucket]
+
   environment {
     variables = {
-      TABLE_NAME = "Wild-Rides-Table"  # Replace with your DynamoDB table name
+      TABLE_NAME = "Wild-Rides-Table"
     }
   }
 }
 
-
-resource "aws_lambda_function_event_invoke_config" "test_event_config" {
+# Invoke Lambda Function
+resource "aws_lambda_invocation" "invoke_test_event" {
   function_name = aws_lambda_function.wild_rides_lambda.function_name
-
-  destination_config {
-    on_success {
-      destination = aws_lambda_function.wild_rides_lambda.arn
+  input         = <<EOT
+    {
+      "key1": "lambda",
+      "key2": "s3"
     }
+  EOT
 
-    on_failure {
-      destination = aws_lambda_function.wild_rides_lambda.arn
-    }
-  }
+  depends_on = [aws_lambda_function.wild_rides_lambda]
 }
 
-resource "null_resource" "invoke_test_event" {
-  provisioner "local-exec" {
-    command = <<EOT
-      aws lambda invoke \
-        --function-name ${aws_lambda_function.wild_rides_lambda.function_name} \
-        --payload '{"key1":"value1","key2":"value2"}' \
-        /dev/null
-    EOT
-  }
-
-  depends_on = [aws_lambda_function_event_invoke_config.test_event_config]
+# Capture Lambda output
+output "lambda_output" {
+  value = aws_lambda_invocation.invoke_test_event.result
 }
+
