@@ -18,33 +18,33 @@ resource "aws_lambda_function" "wild_rides_lambda" {
 }
 
 # Invoke Lambda Function
-resource "aws_lambda_invocation" "invoke_test_event" {
-  function_name = aws_lambda_function.wild_rides_lambda.function_name
-  input         = <<EOT
- {
-    "path": "/ride",
-    "httpMethod": "POST",
-    "headers": {
-        "Accept": "*/*",
-        "Authorization": "eyJraWQiOiJLTzRVMWZs",
-        "content-type": "application/json; charset=UTF-8"
-    },
-    "queryStringParameters": null,
-    "pathParameters": null,
-    "requestContext": {
-        "authorizer": {
-            "claims": {
-                "cognito:username": "the_username"
-            }
-        }
-    },
-    "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
-}
+# resource "aws_lambda_invocation" "invoke_test_event" {
+#   function_name = aws_lambda_function.wild_rides_lambda.function_name
+#   input         = <<EOT
+#  {
+#     "path": "/ride",
+#     "httpMethod": "POST",
+#     "headers": {
+#         "Accept": "*/*",
+#         "Authorization": "eyJraWQiOiJLTzRVMWZs",
+#         "content-type": "application/json; charset=UTF-8"
+#     },
+#     "queryStringParameters": null,
+#     "pathParameters": null,
+#     "requestContext": {
+#         "authorizer": {
+#             "claims": {
+#                 "cognito:username": "the_username"
+#             }
+#         }
+#     },
+#     "body": "{\"PickupLocation\":{\"Latitude\":47.6174755835663,\"Longitude\":-122.28837066650185}}"
+# }
 
-  EOT
+#   EOT
 
-  depends_on = [aws_lambda_function.wild_rides_lambda]
-}
+#   depends_on = [aws_lambda_function.wild_rides_lambda]
+# }
 
 # Capture Lambda output
 output "lambda_output" {
