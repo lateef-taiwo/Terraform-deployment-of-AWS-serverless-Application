@@ -68,8 +68,10 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution_policy" {
 #   role       = aws_iam_role.lambda_iam_role.name
 # }
 
-
-
+resource "aws_iam_role_policy_attachment" "lambda_basic_s3_read_access_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  role       = aws_iam_role.lambda_iam_role.name
+}
 
 resource "aws_iam_policy" "dynamodb_write_policy" {
   name        = "dynamodb_write_policy"
