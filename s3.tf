@@ -22,14 +22,14 @@ resource "aws_s3_bucket_public_access_block" "s3-bucket-block" {
 data "archive_file" "source" {
   type        = "zip"
   source_dir  = "../Wild-Rydes/"
-  output_path = "../Wild-Rydes/lambda-function.zip"
+  output_path = "../Wild-Rydes/index.zip"
 }
 
 # Upload the zip file to S3 bucket
-resource "aws_s3_object" "lambda-function-zip" {
+resource "aws_s3_object" "lambda-function-code" {
   bucket = aws_s3_bucket.s3-bucket.bucket
   source = data.archive_file.source.output_path
-  key    = "lambda-function.zip"
+  key    = "index.zip"
   acl    = "private"
   depends_on = [aws_s3_bucket.s3-bucket]
 }
