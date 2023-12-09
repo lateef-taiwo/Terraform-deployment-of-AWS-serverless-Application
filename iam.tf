@@ -100,26 +100,29 @@ resource "aws_iam_role_policy_attachment" "dynamodb_write_attachment" {
   role       = aws_iam_role.lambda_iam_role.name
 }
 
+# IAM Role for API Gateway execution
+resource "aws_iam_role" "api_gateway_execution_role" {
+  name = "ApiGatewayExecutionRole"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
 
-# resource "aws_iam_role" "iam_role_amplify" {
-#   name = var.role-2
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Action = "sts:AssumeRole"
-#         Effect = "Allow"
-#         Sid    = ""
-#         Principal = {
-#           Service = "amplify.amazonaws.com"
-#         }
-#       },
-#     ]
-#   })
+# Attach policies to the IAM role (adjust policies based on your needs)
+resource "aws_iam_role_policy_attachment" "api_gateway_execution_role_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+  role       = aws_iam_role.api_gateway_execution_role.name
+}
 
-#   tags = {
-#     tag-key = "tag-value"
-#   }
-# }
 
-#
