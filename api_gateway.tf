@@ -75,7 +75,7 @@ resource "aws_api_gateway_authorizer" "cognito_authorizer" {
   rest_api_id            = aws_api_gateway_rest_api.serverless_api.id
   type                   = "COGNITO_USER_POOLS"
   identity_source        = "method.request.header.Authorization"
-  provider_arns          = [aws_cognito_user_pool.pool.arn]
+  provider_arns          = [var.cognito_arn]
   authorizer_credentials = aws_iam_role.api_gateway_execution_role.arn
 
 }

@@ -6,3 +6,4 @@ variable "codecommit_iam_username" {}
 variable "codecommit_iam_password" {}
 variable "domain_name" {}
 variable "app_branch" {}
+variable "cognito_arn" {}

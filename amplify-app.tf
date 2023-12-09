@@ -25,21 +25,28 @@ BUILD_SPEC
 resource "aws_amplify_branch" "main" {
   app_id = aws_amplify_app.my_amplify_app.id
   branch_name = "main"
-#   domain = var.domain_name # Replace with your custom domain
+  
+}
 
-#   subdomain_settings {
-#     branch_name  = "master"
-#     prefix       = "prefix"
-#   }
-# }
+resource "aws_amplify_domain_association" "custom_domain" {
+   domain_name = var.domain_name  # Replace with your custom domain
+   app_id      = aws_amplify_app.my_amplify_app.id
 
-# resource "aws_amplify_domain" "custom_domain" {
-#    domain_name = var.domain_name  # Replace with your custom domain
-#    app_id      = aws_amplify_app.my_amplify_app.id
-# }
+   # https://example.com
+   sub_domain {
+     branch_name = "aws_amplfiy_branch.main.branch_name"
+     prefix = ""
+   }
 
-# output "amplify_app_url" {
-#   value = aws_amplify_domain.custom_domain.endpoint
+    # https://www.example.com
+  sub_domain {
+    branch_name = aws_amplify_branch.main.branch_name
+    prefix      = "www"
+  }
+}
+
+output "amplify_app_domain_url" {
+  value = aws_amplify_domain.custom_domain.endpoint
  }
 
 output "amplify_app_url" {
