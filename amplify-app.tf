@@ -1,13 +1,18 @@
 resource "aws_amplify_app" "my_amplify_app" {
   name     = "Wild-Rides-Amplify-App"
-  repository = var.codecommit_repository_url   # Replace with your Git repository URL
-  oauth_token = var.codecommit_git_credential # Replace with your GitHub OAuth token
-  # access_token =  var.codecommit_iam_username
-  # access_ = var.codecommit_iam_password 
+  repository = var.codecommit_repository_url   # codecommit_repository_url
+  oauth_token = var.codecommit_git_credential # codecommit_git_credential
 
-  iam_service_role_arn = aws_iam_role.iam_role_amplify.arn
+  # Setup redirect from https://example.com to https://www.example.com
+  # custom_rule {
+  #   source = "https://example.com"
+  #   status = "302"
+  #   target = "https://www.example.com"
+  #   }
 
-  build_spec = <<BUILD_SPEC
+iam_service_role_arn = aws_iam_role.iam_role_amplify.arn
+
+build_spec = <<BUILD_SPEC
 version: 1
 frontend:
   phases:
@@ -24,29 +29,31 @@ BUILD_SPEC
 
 resource "aws_amplify_branch" "main" {
   app_id = aws_amplify_app.my_amplify_app.id
-  branch_name = "main"
+  branch_name = var.app_branch
   
 }
 
+#Associated your domain to your amplify app
 resource "aws_amplify_domain_association" "custom_domain" {
-   domain_name = var.domain_name  # Replace with your custom domain
-   app_id      = aws_amplify_app.my_amplify_app.id
+  app_id      = aws_amplify_app.my_amplify_app.id
+  domain_name = var.domain_name
+  wait_for_verification = true
 
    # https://example.com
    sub_domain {
-     branch_name = "aws_amplfiy_branch.main.branch_name"
+     branch_name = var.app_branch
      prefix = ""
    }
 
     # https://www.example.com
   sub_domain {
-    branch_name = aws_amplify_branch.main.branch_name
+    branch_name = var.app_branch
     prefix      = "www"
   }
 }
 
 output "amplify_app_domain_url" {
-  value = aws_amplify_domain.custom_domain.endpoint
+  value = aws_amplify_domain_association.custom_domain
  }
 
 output "amplify_app_url" {
