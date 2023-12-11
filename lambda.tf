@@ -7,7 +7,7 @@ resource "aws_lambda_function" "wild_rides_lambda" {
   memory_size   = 128
   timeout       = 60
   s3_bucket     = aws_s3_bucket.s3-bucket.bucket
-  s3_key        = "index.zip"
+  s3_key        = "index2.zip"
   depends_on    = [aws_iam_role.lambda_iam_role, aws_s3_bucket.s3-bucket, aws_s3_object.lambda-function-code]
 
   environment {
