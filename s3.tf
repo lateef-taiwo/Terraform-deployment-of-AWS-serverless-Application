@@ -1,4 +1,7 @@
-
+# Create Bucket
+resource "aws_s3_bucket" "s3-bucket" {
+  bucket = "wild-rides-bucket-5190"
+}
 
 # Block Public Access
 resource "aws_s3_bucket_public_access_block" "s3-bucket-block" {
