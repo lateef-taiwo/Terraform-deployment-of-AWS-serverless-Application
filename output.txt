@@ -1,1 +1,0 @@
-{"errorType":"TypeError","errorMessage":"Cannot read properties of undefined (reading 'authorizer')","trace":["TypeError: Cannot read properties of undefined (reading 'authorizer')","    at Runtime.exports.handler (/var/task/index.js:24:28)","    at Runtime.handleOnceNonStreaming (file:///var/runtime/index.mjs:1173:29)"]}
