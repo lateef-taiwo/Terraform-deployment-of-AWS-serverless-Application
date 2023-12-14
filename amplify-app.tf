@@ -59,3 +59,4 @@ output "amplify_app_domain_url" {
 output "amplify_app_url" {
   value = aws_amplify_app.my_amplify_app.default_domain
 }
+
