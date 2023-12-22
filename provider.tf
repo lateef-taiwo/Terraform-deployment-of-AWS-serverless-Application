@@ -17,4 +17,4 @@ provider "aws" {
   region = "us-east-1"
 }    
 
-provider "external" {}
+#provider "external" {}
