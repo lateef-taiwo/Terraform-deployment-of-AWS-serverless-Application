@@ -3,5 +3,24 @@ This repository is for the creation of AWS serverless application using Terrafor
 
 ## This Project is a Multi-repo project with Terraform code in this repository and the App code is in the repository below:
   https://github.com/lateef-taiwo/Wild-Rydes
-
+    
+    
 ![image](./images/Architectural%20Diagram%20Week8.jpg)
+
+
+### Deploying  the serverless services using terraform.
+
+      terrform init
+      terraform plan
+      terraform apply -auto-approve
+
+
+### Deploying the Application
+Navigate to the app code repository,
+https://github.com/lateef-taiwo/Wild-Rydes
+
+Modify the index.html file or any other front end files convenient for you to make changes to.
+ 
+      git add .
+      git commit -m "commit message"
+      git push 
