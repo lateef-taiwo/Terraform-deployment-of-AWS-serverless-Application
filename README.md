@@ -3,3 +3,5 @@ This repository is for the creation of AWS serverless application using Terrafor
 
 ## This Project is a Multi-repo project with Terraform code in this repository and the App code is in the repository below:
   https://github.com/lateef-taiwo/Wild-Rydes
+
+![image](./images/Architectural%20Diagram%20Week8.jpg)
