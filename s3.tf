@@ -1,5 +1,5 @@
 # Create Bucket
-resource "aws_s2_bucket" "s3-bucket" {
+resource "aws_s3_bucket" "s3-bucket" {
   bucket = "wild-rides-bucket-0055"
 }
 
